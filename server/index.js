@@ -20,7 +20,12 @@ connectDB();
 // Middleware
 app.use(
   cors({
-    origin: "https://virasathotel.vercel.app",
+    origin:[
+      
+      "https://virasathotel.vercel.app",
+      "https://virasathotelandrestaurant.com",
+      "https://www.virasathotelandrestaurant.com",
+    ],
     credentials: true,
   })
 );
