@@ -4,12 +4,13 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 
 import bookingRoutes from "./routes/bookingRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 // 🔥 LOAD ENV FIRST (VERY IMPORTANT)
 dotenv.config();
 
 // 🔍 DEBUG (temporary)
-console.log("RAZORPAY KEY:", process.env.RAZORPAY_KEY_ID);
 
 const app = express();
 
@@ -22,6 +23,8 @@ app.use(express.json());
 
 // Routes
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Test route
 app.get("/", (req, res) => {

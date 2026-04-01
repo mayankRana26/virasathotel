@@ -9,9 +9,11 @@ import Gallery from "./pages/Gallery";
 import Contact from "./pages/Contact";
 import Booking from "./pages/Booking";
 import ThankYou from "./pages/ThankYou";
- import RoomDetails from "./pages/RoomDetails";
- import Admin from "./pages/Admin";
+import RoomDetails from "./pages/RoomDetails";
+import Admin from "./pages/Admin";
 import Footer from "./components/Footer";
+import AdminLogin from "./pages/AdminLogin";
+import AdminRoute from "./routes/AdminRoute";
 
 const App = () => {
   return (
@@ -26,8 +28,17 @@ const App = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/booking" element={<Booking />} />
         <Route path="/thank-you" element={<ThankYou />} />
-<Route path="/rooms/:id" element={<RoomDetails />} />
-<Route path="/admin" element={<Admin />} />
+        <Route path="/rooms/:id" element={<RoomDetails />} />
+
+        <Route
+  path="/admin"
+  element={
+    <AdminRoute>
+      <Admin />
+    </AdminRoute>
+  }
+/>
+        <Route path="/admin-login" element={<AdminLogin />} />
       </Routes>
       <Footer />
     </BrowserRouter>
