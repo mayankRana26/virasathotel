@@ -58,7 +58,7 @@ const BookingForm = () => {
 
       // 💰 STEP 1: Create Razorpay order
       const { data: order } = await axios.post(
-        "https://virasathotel-server.onrender.com/api/bookings/create-order",
+        `${import.meta.env.VITE_API_URL}/api/bookings/create-order`,
         { amount: advance }
       );
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://virasathotel-server.onrender.com/api/bookings",
+  baseURL: `${import.meta.env.VITE_API_URL}/api/bookings`,
 });
 
 export const createBooking = (data) => API.post("/create", data);
