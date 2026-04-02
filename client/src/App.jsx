@@ -14,12 +14,13 @@ import Admin from "./pages/Admin";
 import Footer from "./components/Footer";
 import AdminLogin from "./pages/AdminLogin";
 import AdminRoute from "./routes/AdminRoute";
+import ScrollToTopOnNavigate from "./components/ScrollToTopOnNavigate";
 
 const App = () => {
   return (
     <BrowserRouter>
       <Navbar />
-
+      <ScrollToTopOnNavigate />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/rooms" element={<Rooms />} />
