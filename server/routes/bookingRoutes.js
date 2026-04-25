@@ -4,7 +4,6 @@ import {
   getBookings,
   updateBookingStatus,
   deleteBooking,
-  createOrder
 } from "../controllers/bookingController.js";
 
 const router = express.Router();
@@ -15,7 +14,5 @@ router.get("/", getBookings);
 router.put("/:id/status", updateBookingStatus);
 router.delete("/:id", deleteBooking);
 
-// 💰 RAZORPAY
-router.post("/create-order", createOrder);
 
 export default router;

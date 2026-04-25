@@ -1,5 +1,4 @@
 import Booking from "../models/Booking.js";
-import Razorpay from "razorpay";
 
 // ✅ CREATE BOOKING
 export const createBooking = async (req, res) => {
@@ -29,6 +28,7 @@ export const updateBookingStatus = async (req, res) => {
       { status: req.body.status },
       { new: true }
     );
+
     res.json(booking);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -40,31 +40,6 @@ export const deleteBooking = async (req, res) => {
   try {
     await Booking.findByIdAndDelete(req.params.id);
     res.json({ message: "Booking deleted" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-// 💰 CREATE RAZORPAY ORDER (FIXED 🔥)
-export const createOrder = async (req, res) => {
-  try {
-    // 🔥 Razorpay instance yahin banega (safe)
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
-    });
-
-    const { amount } = req.body;
-
-    const options = {
-      amount: amount * 100,
-      currency: "INR",
-      receipt: "receipt_" + Date.now(),
-    };
-
-    const order = await razorpay.orders.create(options);
-
-    res.json(order);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
