@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { createBooking } from "../api/bookingApi";
 
 const BookingForm = () => {
@@ -21,29 +20,8 @@ const BookingForm = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  // 💰 Room Prices
-  const roomPrices = {
-    "Deluxe Room": 2500,
-    "Standard Room": 1500,
-    "Super Deluxe Room": 3200,
-    "Family Suite": 4500,
-    "Economy Room": 1200,
-    "Luxury Suite": 6000,
-    "Premium Room": 2800,
-    "Couple Special Room": 3500,
-  };
-
-  // 📅 Date calculation
   const checkInDate = new Date(form.checkIn);
   const checkOutDate = new Date(form.checkOut);
-
-  const timeDiff = checkOutDate - checkInDate;
-  const nights = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
-  const totalNights = nights > 0 ? nights : 0;
-
-  const pricePerNight = roomPrices[form.roomType] || 0;
-  const total = totalNights > 0 ? pricePerNight * totalNights : 0;
-  const advance = Math.round(total * 0.25);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,40 +34,18 @@ const BookingForm = () => {
     try {
       setLoading(true);
 
-      // 💰 STEP 1: Create Razorpay order
-      const { data: order } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/bookings/create-order`,
-        { amount: advance }
-      );
+      await createBooking({
+        name: form.name,
+        phone: form.phone,
+        checkIn: form.checkIn,
+        checkOut: form.checkOut,
+        guests: form.guests,
+        roomType: form.roomType,
+      });
 
-      // 💳 STEP 2: Razorpay options
-      const options = {
-        key: "rzp_test_SXTjAvLdimqC5C",
-        amount: order.amount,
-        currency: "INR",
-        name: "Virasat Hotel",
-        description: "Room Booking Advance",
+      const phone = "919410977778";
 
-        handler: async function (response) {
-          try {
-            // 💾 STEP 3: Save booking in DB
-            await createBooking({
-              name: form.name,
-              phone: form.phone,
-              checkIn: form.checkIn,
-              checkOut: form.checkOut,
-              guests: form.guests,
-              roomType: form.roomType,
-              totalAmount: total,
-              advanceAmount: advance,
-              paymentStatus: "partial",
-              paymentId: response.razorpay_payment_id,
-            });
-
-            // 💚 STEP 4: WhatsApp message
-            const phone = "919410977778";
-
-            const text = `🔥 New Booking Confirmed
+      const text = `🔥 New Booking Request
 
 👤 Name: ${form.name}
 📞 Phone: ${form.phone}
@@ -97,44 +53,23 @@ const BookingForm = () => {
 👥 Guests: ${form.guests}
 
 📅 Check-in: ${form.checkIn}
-📅 Check-out: ${form.checkOut}
+📅 Check-out: ${form.checkOut}`;
 
-💰 Total: ₹${total}
-💵 Advance Paid: ₹${advance}
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
 
-🆔 Payment ID: ${response.razorpay_payment_id}`;
-
-            const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
-
-setTimeout(() => {
-  window.location.href = url;
-}, 500);
-            // 🎉 Redirect
-            navigate("/thank-you", {
-              state: {
-                name: form.name,
-                roomType: form.roomType,
-                advanceAmount: advance,
-              },
-            });
-
-          } catch (err) {
-            console.log(err);
-            alert("Booking save failed ❌");
-          }
+      navigate("/thank-you", {
+        state: {
+          name: form.name,
+          roomType: form.roomType,
         },
+      });
 
-        theme: {
-          color: "#facc15",
-        },
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-
+      setTimeout(() => {
+        window.location.href = url;
+      }, 500);
     } catch (error) {
       console.log(error);
-      alert("Payment Failed ❌");
+      alert("Booking Failed ❌");
     } finally {
       setLoading(false);
     }
@@ -193,7 +128,7 @@ setTimeout(() => {
           type="number"
           name="guests"
           min="1"
-          max={2}
+          max="2"
           required
           value={form.guests}
           onChange={handleChange}
@@ -218,23 +153,12 @@ setTimeout(() => {
           <option>Couple Special Room</option>
         </select>
 
-        {/* 💰 PRICE */}
-        {totalNights > 0 && (
-          <div className="text-sm text-gray-600 space-y-1">
-            <p>🛏 Nights: {totalNights}</p>
-            <p>💰 Total: ₹{total}</p>
-            <p className="text-yellow-500 font-semibold">
-              Advance (25%): ₹{advance}
-            </p>
-          </div>
-        )}
-
         <button
           type="submit"
           disabled={loading}
           className="w-full bg-yellow-400 text-black py-2.5 rounded-full font-semibold"
         >
-          {loading ? "Processing..." : "Pay & Book"}
+          {loading ? "Processing..." : "Book Now"}
         </button>
       </form>
     </section>

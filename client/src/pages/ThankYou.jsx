@@ -24,10 +24,6 @@ const ThankYou = () => {
           Room: <span className="font-semibold">{data?.roomType}</span>
         </p>
 
-        <p className="mt-2 text-yellow-500 font-semibold">
-          Advance Paid: ₹{data?.advanceAmount}
-        </p>
-
         <p className="mt-3 text-gray-500 text-sm">
           Our team will contact you shortly.
         </p>
